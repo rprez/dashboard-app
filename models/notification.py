@@ -71,7 +71,6 @@ class NotificationModel(db.Model):
     def get_notification_list(cls) -> list:
         return cls.query.all()
 
-
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
