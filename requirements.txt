@@ -2,7 +2,7 @@ Flask
 Flask-SQLAlchemy
 Flask-RESTful
 uwsgi
-psycopg2
+psycopg2-binary
 cx_Oracle
 dash==1.0.1
 dash-daq==0.1.0

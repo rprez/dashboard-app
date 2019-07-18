@@ -1,6 +1,9 @@
 from flask_restful import Resource
 from models.notification import NotificationModel
 
+'''
+    Clase encargada de gestionar las APIs Rest
+'''
 
 class Notification(Resource):
     def get(self, imei):

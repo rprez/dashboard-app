@@ -1,19 +1,12 @@
 # coding=utf-8
 
 import flask
-from flask_restful import Api
-import dash
 import os
 
 from services.notification import Notification, NotificationList
 from services.alert import Alert, AlertList
-import dash_html_components as html
-import dash_core_components as dcc
-import dash_table
-from dash.dependencies import Input, Output
-from controlers.notification import NotificationControler
-
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+from dashboard import DashBoard
+from flask_restful import Api
 
 server = flask.Flask(__name__)
 
@@ -26,47 +19,16 @@ server.secret_key = '3b4be1bd-c8a8-466d-bffd-9ac2a2de6c8c'
 
 @server.route('/')
 def index():
-    return 'Hello Flask app'
-
-
-app = dash.Dash(
-    __name__,
-    server=server,
-    routes_pathname_prefix='/dash/'
-)
+    return 'Hi'
 
 
 api = Api(server)
-
 api.add_resource(Notification, '/notification/<string:imei>')
 api.add_resource(Alert, '/alert/<string:imei>')
 api.add_resource(NotificationList, '/notifications')
 api.add_resource(AlertList, '/alerts')
 
-app.layout = html.Div(
-        html.Div([
-            html.H1(children="Dashboard"),
-            html.Div(children='''
-               Dashboard: Monitoreo de medidores.
-           '''),
-            dash_table.DataTable(
-                id='notifications',
-                columns=[{"name": i, "id": i} for i in NotificationControler.get_atributes_list()],
-                data=[]
-            ),
-            dcc.Interval(
-                id='interval-component',
-                interval=1 * 1000,  # in milliseconds
-                n_intervals=0
-            )
-        ])
-    )
-
-
-@app.callback(Output('notifications', 'data'), [Input('interval-component', 'n_intervals')])
-def generate_table(n):
-    print("ACTUALIZO")
-    return [x.json() for x in NotificationControler.get_all_notifications()]
+ute_dashboard = DashBoard(server)
 
 if __name__ == '__main__':
     from db import db
