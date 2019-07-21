@@ -3,7 +3,7 @@
 import flask
 import os
 
-from services.notification import Notification, NotificationList
+from services.notification import Notification, NotificationList, NotificationActiveList
 from services.alert import Alert, AlertList
 from dashboard import DashBoard
 from flask_restful import Api
@@ -26,6 +26,7 @@ api = Api(server)
 api.add_resource(Notification, '/notification/<string:imei>')
 api.add_resource(Alert, '/alert/<string:imei>')
 api.add_resource(NotificationList, '/notifications')
+api.add_resource(NotificationActiveList, '/actives')
 api.add_resource(AlertList, '/alerts')
 
 ute_dashboard = DashBoard(server)

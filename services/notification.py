@@ -1,20 +1,37 @@
 from flask_restful import Resource
-from models.notification import NotificationModel
+from controlers.notification import NotificationControler
 
 '''
     Clase encargada de gestionar las APIs Rest
 '''
 
 class Notification(Resource):
+
+    def __init__(self):
+        self.controler = NotificationControler()
+
     def get(self, imei):
-        notification = NotificationModel.find_by_imei(imei)
+        notification = self.controler.find_by_imei(imei)
         if notification:
             return notification.json()
         return {'message': 'Notification not found'}, 404
 
 
 class NotificationList(Resource):
+
+    def __init__(self):
+        self.controler = NotificationControler()
+
     def get(self):
-        return {'notifications': [notification.json() for notification in NotificationModel.query.all()]}
+        return {'notifications': [notification.json() for notification in self.controler.get_all_notifications()]}
+
+
+class NotificationActiveList(Resource):
+
+    def __init__(self):
+        self.controler = NotificationControler()
+
+    def get(self):
+        return {'notifications': [notification.json() for notification in self.controler.get_active_meter_list(1,1,00)]}
 
 

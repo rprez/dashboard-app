@@ -1,6 +1,10 @@
 import dash_table
 from controlers.notification import NotificationControler
 import dash_html_components as html
+import dash_core_components as dcc
+import plotly.graph_objs as go
+import random
+import datetime
 
 def generate_table():
 
@@ -58,3 +62,25 @@ def get_mini_container():
         ),
     ]
 
+def generate_graph():
+    return [
+        dcc.Graph(id="main_graph",
+                  figure={
+                      'data': [go.Scatter(
+                                x= [datetime.datetime.now() - datetime.timedelta(days=x) for x in range (100)],
+                                y=[random.randrange(100) for x in range(100)],
+                                text="TEXTO",
+                                mode='lines+markers',
+                                marker={
+                                'size': 15,
+                                'opacity': 0.5,
+                                'line': {'width': 0.5, 'color': 'white'}
+                            }
+                         )
+                      ],
+                      'layout': {
+                          'clickmode': 'event+select'
+                      }
+                    }
+                  )
+    ]

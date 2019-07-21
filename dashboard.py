@@ -1,5 +1,5 @@
 
-from views.components import generate_table,get_antel_logo,get_ute_logo,get_mini_container
+from views.components import generate_table,get_antel_logo,get_ute_logo,get_mini_container,generate_graph
 import dash_html_components as html
 import dash_core_components as dcc
 import dash
@@ -10,6 +10,9 @@ from controlers.notification import NotificationControler
 class DashBoard(object):
 
     def __init__(self,server):
+
+        self.notification_controller = NotificationControler()
+
         external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
         app = dash.Dash(
@@ -65,7 +68,7 @@ class DashBoard(object):
                             className="row container-display",
                         ),
                         html.Div(
-                            [dcc.Graph(id="main_graph")],
+                            generate_graph(),
                             className="pretty_container twelve columns",
                         ),
                         html.Div(
@@ -87,11 +90,14 @@ class DashBoard(object):
 
         @app.callback(Output('notifications', 'data'), [Input('interval-component', 'n_intervals')])
         def update_table(n):
-            print("ACTUALIZO")
-            return [x.json() for x in NotificationControler.get_all_notifications()]
+            return [x.json() for x in self.notification_controller.get_all_notifications()]
 
         @app.callback(Output('total_notifications', 'children'), [Input('interval-component', 'n_intervals')])
-        def update_table(n):
+        def update_total_notification(n):
             return "1045"
+
+        @app.callback(Output('active_text', 'children'), [Input('interval-component', 'n_intervals')])
+        def update_actives_total(n):
+            return len(self.notification_controller.get_active_meter_list(0,1,00))
 
 
