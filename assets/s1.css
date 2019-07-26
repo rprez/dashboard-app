@@ -589,6 +589,7 @@ there.
     padding: 15px;
     position: relative;
     box-shadow: 2px 2px 2px lightgrey;
+    flex: 1;
   }
   #plotly-image {
     margin-bottom: 0px !important;

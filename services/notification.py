@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from controlers.notification import NotificationControler
+from controlers.notification import NotificationController
 
 '''
     Clase encargada de gestionar las APIs Rest
@@ -8,7 +8,7 @@ from controlers.notification import NotificationControler
 class Notification(Resource):
 
     def __init__(self):
-        self.controler = NotificationControler()
+        self.controler = NotificationController()
 
     def get(self, imei):
         notification = self.controler.find_by_imei(imei)
@@ -20,7 +20,7 @@ class Notification(Resource):
 class NotificationList(Resource):
 
     def __init__(self):
-        self.controler = NotificationControler()
+        self.controler = NotificationController()
 
     def get(self):
         return {'notifications': [notification.json() for notification in self.controler.get_all_notifications()]}
@@ -29,7 +29,7 @@ class NotificationList(Resource):
 class NotificationActiveList(Resource):
 
     def __init__(self):
-        self.controler = NotificationControler()
+        self.controler = NotificationController()
 
     def get(self):
         return {'notifications': [notification.json() for notification in self.controler.get_active_meter_list(1,1,00)]}

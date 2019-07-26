@@ -1,16 +1,16 @@
 import dash_table
-from controlers.notification import NotificationControler
+from controlers.notification import NotificationController
 import dash_html_components as html
 import dash_core_components as dcc
 import plotly.graph_objs as go
-import random
-import datetime
+
+
 
 def generate_table():
 
     return dash_table.DataTable(
                 id='notifications',
-                columns=[{"name": i, "id": i} for i in NotificationControler.get_atributes_list()],
+                columns=[{"name": i, "id": i} for i in NotificationController.get_atributes_list()],
                 data=[]
     )
 
@@ -41,34 +41,41 @@ def get_ute_logo(app):
 def get_mini_container():
     return [
         html.Div(
-            [html.H6(id="total_notifications"), html.P("Notificaciones")],
-            id="wells",
+            [html.H6(id="total_notifications_text"), html.P("Notificaciones")],
+            id="total_notifications",
             className="mini_container",
         ),
         html.Div(
             [html.H6(id="alert_text"), html.P("Alertas")],
-            id="gas",
+            id="alert",
             className="mini_container",
         ),
         html.Div(
-            [html.H6(id="active_text"), html.P("Activos")],
-            id="oil",
+            [html.H6(id="actives_text"), html.P("Activos")],
+            id="actives",
             className="mini_container",
         ),
         html.Div(
-            [html.H6(id="without_signal"), html.P("Sin señal")],
-            id="water",
+            [html.H6(id="down_meter_text"), html.P("Sin respuesta")],
+            id="down_meter",
+            className="mini_container",
+        ),
+        html.Div(
+            [html.H6(id="list_errors_text"), html.P("Errores")],
+            id="list_errors",
             className="mini_container",
         ),
     ]
+
+
 
 def generate_graph():
     return [
         dcc.Graph(id="main_graph",
                   figure={
                       'data': [go.Scatter(
-                                x= [datetime.datetime.now() - datetime.timedelta(days=x) for x in range (100)],
-                                y=[random.randrange(100) for x in range(100)],
+                                x=[],
+                                y=[],
                                 text="TEXTO",
                                 mode='lines+markers',
                                 marker={

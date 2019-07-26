@@ -100,11 +100,16 @@ body {
   padding: 15px;
   position: relative;
   box-shadow: 2px 2px 2px lightgrey;
+  flex:1;
 }
 
 #right-column {
   display: flex;
   flex-direction: column;
+}
+
+#block {
+  flex: 1;
 }
 
 #wells {
