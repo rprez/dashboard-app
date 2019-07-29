@@ -76,12 +76,7 @@ def get_mini_container():
             [html.H6(id="down_meter_text"), html.P("Sin respuesta")],
             id="down_meter",
             className="mini_container",
-        ),
-        html.Div(
-            [html.H6(id="list_errors_text"), html.P("Errores")],
-            id="list_errors",
-            className="mini_container",
-        ),
+        )
     ]
 
 

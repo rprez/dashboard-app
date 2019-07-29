@@ -6,7 +6,7 @@ import dash
 from dash.dependencies import Input, Output
 from controlers.notification import NotificationController
 from controlers.alert import AlertController
-
+from collections import Counter
 import plotly.graph_objs as go
 
 
@@ -70,10 +70,19 @@ class DashBoard(object):
                             id="info-container",
                             className="row container-display",
                         ),
-                        html.Div(
-                            generate_graph(),
-                            id="main_graph_container",
-                            className="pretty_container",
+                        html.Div([
+                            html.Div(
+                                generate_graph(),
+                                id="main_graph_container",
+                                className="pretty_container eight columns",
+                            ),
+                            html.Div(
+                                [dcc.Graph(id="charts_errors")],
+                                id="list_errors",
+                                className="pretty_container four columns",
+                            ),
+                        ],
+                            className="row flex-display",
                         ),
                         html.Div([
                                         html.Div([
@@ -151,6 +160,23 @@ class DashBoard(object):
         def update_total_down_meter(n):
             return self.notification_controller.get_count_down_meter(0, 1, 00)
 
-        @app.callback(Output('list_errors_text', 'children'), [Input('interval-component', 'n_intervals')])
+        @app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals')])
         def update_total_errors(n):
-            return self.alert_controller.get_list_errors(0, 1, 00)
+            alert_list = self.alert_controller.get_alert_list(0,1,0)
+            data = Counter([x[1] for x in alert_list])
+            total_notification = self.notification_controller.get_count_active_meter_list(0, 1, 0)
+            data = [
+                    dict(
+                        type="pie",
+                        labels=list(data.keys())+["Notificaciones"],
+                        values=list(data.values())+[total_notification],
+                        hoverinfo="text+value+percent",
+                        textinfo="label+percent+name",
+                        hole=0.5,
+                    ),
+                ]
+            layout_pie = {}
+            layout_pie["title"] = "Errores"
+            layout_pie["font"] = dict(color="#777777")
+            return dict(data=data, layout=layout_pie)
+
