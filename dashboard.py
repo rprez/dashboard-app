@@ -1,12 +1,14 @@
-from views.components import generate_table, get_antel_logo, get_ute_logo, get_mini_container, generate_graph
+from views.components import generate_notification_table, get_antel_logo, get_ute_logo, get_mini_container
+from views.components import generate_graph, generate_alert_table
 import dash_html_components as html
 import dash_core_components as dcc
 import dash
 from dash.dependencies import Input, Output
 from controlers.notification import NotificationController
 from controlers.alert import AlertController
-from datetime import datetime, timedelta
+
 import plotly.graph_objs as go
+
 
 class DashBoard(object):
 
@@ -70,39 +72,53 @@ class DashBoard(object):
                         ),
                         html.Div(
                             generate_graph(),
-                            className="pretty_container twelve columns",
+                            id="main_graph_container",
+                            className="pretty_container",
                         ),
-                        html.Div(
-                            generate_table(),
-                            className="pretty_container twelve columns"
+                        html.Div([
+                                        html.Div([
+                                                html.H5(
+                                                    "Notificaciones",
+                                                    style={"text-align": "center", },
+                                                ),
+                                                generate_notification_table()
+                                            ],
+                                            className="pretty_container seven columns"
+                                        ),
+                                        html.Div([
+                                            html.H5(
+                                                "Alertas",
+                                                style={"text-align": "center", },
+                                            ),
+                                            generate_alert_table()
+                                        ],
+                                            className="pretty_container five columns"
+                                        ),
+                        ],
+                            className="row flex-display"
                         ),
-
                     ],
-                    id="right-column",
-                    className="twelve columns",
-                ),
+                 ),
             ],
-                className="row flex-display",
             ),
         ],
             id="mainContainer",
             style={"display": "flex", "flex-direction": "column"},
         )
 
-
         @app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals')])
         def update_graph(n):
-            notifications = self.notification_controller.get_active_meter_list(30, 00, 00)
+            data = self.notification_controller.get_init_active_graph(30, 00, 00)
             return {
                       'data': [go.Scatter(
-                                x= [datetime.now() - timedelta(days=x) for x in range(30)],
-                                y=[self.notification_controller.get_init_active_graph(30, 00,00)],
-                                text="TEXTO",
+                                x=list(data.keys()),
+                                y=list(data.values()),
+                                text="Notificaciones",
                                 mode='lines+markers',
                                 marker={
-                                'size': 15,
-                                'opacity': 0.5,
-                                'line': {'width': 0.5, 'color': 'white'}
+                                    'size': 15,
+                                    'opacity': 0.5,
+                                    'line': {'width': 0.5, 'color': 'white'}
                             }
                          )
                       ],
@@ -111,10 +127,13 @@ class DashBoard(object):
                       }
                     }
 
-
         @app.callback(Output('notifications', 'data'), [Input('interval-component', 'n_intervals')])
-        def update_table(n):
+        def update_table_notifications(n):
             return [x.json() for x in self.notification_controller.get_all_notifications()]
+
+        @app.callback(Output('alerts', 'data'), [Input('interval-component', 'n_intervals')])
+        def update_table_alert(n):
+            return [x.json() for x in self.alert_controller.get_all_alerts()]
 
         @app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals')])
         def update_notification_total(n):
@@ -134,4 +153,4 @@ class DashBoard(object):
 
         @app.callback(Output('list_errors_text', 'children'), [Input('interval-component', 'n_intervals')])
         def update_total_errors(n):
-            return self.alert_controller.get_count_all_alert()
+            return self.alert_controller.get_list_errors(0, 1, 00)

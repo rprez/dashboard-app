@@ -25,6 +25,9 @@ class AlertController:
     def get_alert_by_type(self, type_alert: str) -> list:
         return db.session.query(AlertModel).filter_by(alert=type_alert).all()
 
+    def get_list_errors(self,days,hour,minutes) -> list:
+        return "lastgasp sent"
+
     def get_all_alerts(self) -> list:
         return db.session.query(AlertModel).all()
 

@@ -435,6 +435,8 @@ li {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 table {
   border-collapse: collapse;
+  width:-moz-available;
+
 }
 th,
 td {

@@ -38,18 +38,19 @@ class NotificationController:
         """
         now = datetime.now()
         period_time = now - timedelta(days=days,hours=hour,minutes=minutes)
-        return db.session.query(NotificationModel).filter(NotificationModel.fecha <= now,NotificationModel.fecha >= period_time).all()
+        return db.session.query(NotificationModel).filter(NotificationModel.fecha <= now,NotificationModel.fecha >= period_time).order_by(NotificationModel.fecha.desc())
 
-    def get_init_active_graph(self,days,hour,minutes):
+
+
+    def get_init_active_graph(self, days, hour, minutes):
         """Eje de las x para grafica de activos dentro de un perdio de tiempo.
             :param days
             :param hour
             :param minutes
         """
         active_meter_list = self.get_active_meter_list(days,hour,minutes)
-        result = Counter([x.fecha.date() for x in active_meter_list if x.fecha])
-        ACA ME QUEDE
-        return result
+        return Counter([x.fecha.date() for x in active_meter_list if x.fecha])
+
 
 
     def get_count_active_meter_list(self,days,hour,minutes) -> int:
