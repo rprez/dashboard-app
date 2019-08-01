@@ -21,7 +21,7 @@ class DashBoard(object):
         app = dash.Dash(
             __name__,
             server=server,
-            routes_pathname_prefix='/dash/', external_stylesheets=external_stylesheets
+            routes_pathname_prefix='/monitor/', external_stylesheets=external_stylesheets
         )
 
         app.layout = html.Div([
@@ -53,7 +53,7 @@ class DashBoard(object):
                 ),
                 dcc.Interval(
                     id='interval-component',
-                    interval=1 * 1000,  # in milliseconds
+                    interval=10 * 1000,  # in milliseconds
                     n_intervals=0
                 )
             ],
@@ -132,10 +132,11 @@ class DashBoard(object):
                          )
                       ],
                       'layout': {
-                          'clickmode': 'event+select'
+                          'clickmode': 'event+select',
+                          'title':'Medidores que enviaron notificación'
                       }
                     }
-
+        # Tables update
         @app.callback(Output('notifications', 'data'), [Input('interval-component', 'n_intervals')])
         def update_table_notifications(n):
             return [x.json() for x in self.notification_controller.get_all_notifications()]
@@ -144,22 +145,22 @@ class DashBoard(object):
         def update_table_alert(n):
             return [x.json() for x in self.alert_controller.get_all_alerts()]
 
+        # Data Notification Update
         @app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals')])
-        def update_notification_total(n):
-            return self.notification_controller.get_count_all_notifications()
+        def update_notification_data(n):
+            return self.notification_controller.get_count_notifications_by_perdiod(0, 1, 00)
 
         @app.callback(Output('alert_text', 'children'), [Input('interval-component', 'n_intervals')])
         def update_alert_total(n):
-            return self.alert_controller.get_count_all_alert()
+            return self.alert_controller.get_count_alert_by_perdiod(0, 1, 00)
 
-        @app.callback(Output('actives_text', 'children'), [Input('interval-component', 'n_intervals')])
+        @app.callback([Output('actives_text', 'children'),Output('down_meter_text', 'children'),Output('total_imei_reports_text', 'children')], [Input('interval-component', 'n_intervals')])
         def update_actives_total(n):
-            return self.notification_controller.get_count_active_meter_list(0, 1, 00)
+            active_count = self.notification_controller.get_count_active_meter_list(0, 1, 00)
+            total_count =  self.notification_controller.get_count_distinct_imei_notification()
+            return active_count, total_count - active_count, total_count
 
-        @app.callback(Output('down_meter_text', 'children'), [Input('interval-component', 'n_intervals')])
-        def update_total_down_meter(n):
-            return self.notification_controller.get_count_down_meter(0, 1, 00)
-
+        # Charts Update
         @app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals')])
         def update_total_errors(n):
             alert_list = self.alert_controller.get_alert_list(0,1,0)

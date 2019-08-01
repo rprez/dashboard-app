@@ -35,6 +35,16 @@ class AlertController:
         period_time = now - timedelta(days=days, hours=hour, minutes=minutes)
         return db.session.query(AlertModel.id,AlertModel.alert).filter(AlertModel.fecha <= now, AlertModel.fecha >= period_time).all()
 
+    def get_count_alert_by_perdiod(self, days, hour, minutes) -> int:
+        """ Cantidad de alertas dentro de un perdio de tiempo.
+            :param days
+            :param hour
+            :param minutes
+        """
+        now = datetime.now()
+        period_time = now - timedelta(days=days, hours=hour, minutes=minutes)
+        return db.session.query(AlertModel).filter(AlertModel.fecha <= now, AlertModel.fecha >= period_time).count()
+
     def get_all_alerts(self) -> list:
         return db.session.query(AlertModel).all()
 

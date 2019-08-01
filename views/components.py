@@ -58,24 +58,29 @@ def get_ute_logo(app):
 def get_mini_container():
     return [
         html.Div(
-            [html.H6(id="total_notifications_text"), html.P("Notificaciones")],
+            [html.H6(id="total_notifications_text"), html.P("Notificaciones"),html.Span("Cantidad de notificaciones en 1hs",className="tooltiptext")],
             id="total_notifications",
-            className="mini_container",
+            className="mini_container tooltip",
         ),
         html.Div(
-            [html.H6(id="alert_text"), html.P("Alertas")],
+            [html.H6(id="alert_text"), html.P("Alertas"),html.Span("Cantidad de alertas en 1hs",className="tooltiptext")],
             id="alert",
-            className="mini_container",
+            className="mini_container tooltip",
         ),
         html.Div(
-            [html.H6(id="actives_text"), html.P("Activos")],
+            [html.H6(id="actives_text"), html.P("Activos"),html.Span("Medidores reportados en 1hs ",className="tooltiptext")],
             id="actives",
-            className="mini_container",
+            className="mini_container tooltip",
         ),
         html.Div(
-            [html.H6(id="down_meter_text"), html.P("Sin respuesta")],
+            [html.H6(id="down_meter_text"), html.P("Sin respuesta"),html.Span("Sin respuestas en 1hs ",className="tooltiptext")],
             id="down_meter",
-            className="mini_container",
+            className="mini_container tooltip",
+        ),
+        html.Div(
+            [html.H6(id="total_imei_reports_text"), html.P("Total"),html.Span("Total de medidores reportados",className="tooltiptext")],
+            id="total_imei_reports",
+            className="mini_container tooltip",
         )
     ]
 
