@@ -7,6 +7,7 @@ from services.notification import Notification, NotificationList, NotificationAc
 from services.alert import Alert, AlertList
 from dashboard import DashBoard
 from flask_restful import Api
+from db import db
 
 server = flask.Flask(__name__)
 
@@ -29,18 +30,16 @@ api.add_resource(NotificationList, '/notifications')
 api.add_resource(NotificationActiveList, '/actives')
 api.add_resource(AlertList, '/alerts')
 
+db.init_app(server)
 ute_dashboard = DashBoard(server)
 
 if __name__ == '__main__':
-    from db import db
-    db.init_app(server)
-
     if server.config['DEBUG']:
         @server.before_first_request
         def create_tables():
             db.create_all()
 
-    server.run(debug=True ,port=5000)
+    ute_dashboard.app.run_server(debug=True ,port=5000)
 
 
 
