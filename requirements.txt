@@ -1,7 +1,7 @@
 Flask
 Flask-SQLAlchemy
 Flask-RESTful
-uwsgi
+gunicorn
 psycopg2-binary
 cx_Oracle
 dash==1.0.1
