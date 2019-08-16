@@ -11,6 +11,9 @@ def generate_notification_table():
                 id='notifications',
                 columns=[{"name": i, "id": i} for i in NotificationController.get_atributes_list()],
                 data=[],
+                page_action="custom",
+                page_current=0,
+                page_size=20,
                 style_table={
                       'maxHeight': '300px',
                       'overflowY': 'scroll',
@@ -24,6 +27,9 @@ def generate_alert_table():
                 id='alerts',
                 columns=[{"name": i, "id": i} for i in AlertController.get_atributes_list()],
                 data=[],
+                page_action="custom",
+                page_current=0,
+                page_size=20,
                 style_table={
                       'maxHeight': '300px',
                       'overflowY': 'scroll',

@@ -1,6 +1,7 @@
 from models.notification import NotificationModel
 from datetime import datetime, timedelta
 from collections import Counter
+from sqlalchemy import desc
 
 from db import db
 
@@ -26,15 +27,16 @@ class NotificationController:
     def get_notification_by_type(self, type_alert: str) -> list:
         return db.session.query(NotificationModel).filter_by(alert=type_alert).all()
 
-    def get_all_notifications(self) -> list:
-        return db.session.query(NotificationModel).all()
+    def get_all_notifications(self,page_current,page_size) -> list:
+        result =  db.session.query(NotificationModel).order_by(NotificationModel.fecha.desc()).paginate(page_current,page_size,False).items
+        return result
 
     def get_count_all_notifications(self) -> list:
         """Obtiene todas las mediciones enviadas. """
         return db.session.query(NotificationModel).count()
 
     def get_count_notifications_by_perdiod(self,days, hour, minutes) -> int:
-        """Obtiene el listado de notificaciones enviadas segun el periodo de tiempo dado.
+        """Obtiene la cantidad de notificaciones enviadas segun el periodo de tiempo dado.
                     :param days
                     :param hour
                     :param minutes

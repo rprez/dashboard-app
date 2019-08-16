@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from models.alert import AlertModel
+from sqlalchemy import desc
 
 from db import db
 
@@ -45,8 +46,8 @@ class AlertController:
         period_time = now - timedelta(days=days, hours=hour, minutes=minutes)
         return db.session.query(AlertModel).filter(AlertModel.fecha <= now, AlertModel.fecha >= period_time).count()
 
-    def get_all_alerts(self) -> list:
-        return db.session.query(AlertModel).all()
+    def get_all_alerts(self,page_current, page_size) -> list:
+        return db.session.query(AlertModel).order_by(AlertModel.fecha.desc()).paginate(page_current, page_size,False).items
 
     def get_count_all_alert(self) -> int:
         return db.session.query(AlertModel).count()

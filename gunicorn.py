@@ -4,7 +4,7 @@ from multiprocessing import cpu_count
 def max_workers():
     return cpu_count()
 
-bind = '127.0.0.1:8000'
+bind = '0.0.0.0:8000'
 backlog = 2048
 workers = max_workers()
 worker_class = 'sync'

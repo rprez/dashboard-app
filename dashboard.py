@@ -137,13 +137,15 @@ class DashBoard(object):
                       }
                     }
         # Tables update
-        @self.app.callback(Output('notifications', 'data'), [Input('interval-component', 'n_intervals')])
-        def update_table_notifications(n):
-            return [x.json() for x in self.notification_controller.get_all_notifications()]
+        @self.app.callback(Output('notifications', 'data'),
+                         [Input('notifications','page_current'),Input('notifications','page_size')])
+        def update_table_notifications(page_current,page_size):
+            return [x.json() for x in self.notification_controller.get_all_notifications(page_current,page_size)]
 
-        @self.app.callback(Output('alerts', 'data'), [Input('interval-component', 'n_intervals')])
-        def update_table_alert(n):
-            return [x.json() for x in self.alert_controller.get_all_alerts()]
+        @self.app.callback(Output('alerts', 'data'),
+                           [Input('alerts','page_current'),Input('alerts','page_size')])
+        def update_table_alert(page_current, page_size):
+            return [x.json() for x in self.alert_controller.get_all_alerts(page_current, page_size)]
 
         # Data Notification Update
         @self.app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals')])
