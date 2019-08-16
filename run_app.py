@@ -22,7 +22,6 @@ server.secret_key = '3b4be1bd-c8a8-466d-bffd-9ac2a2de6c8c'
 def index():
     return 'Hi'
 
-
 api = Api(server)
 api.add_resource(Notification, '/notification/<string:imei>')
 api.add_resource(Alert, '/alert/<string:imei>')

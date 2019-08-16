@@ -53,7 +53,7 @@ class DashBoard(object):
                 ),
                 dcc.Interval(
                     id='interval-component',
-                    interval=10 * 1000,  # in milliseconds
+                    interval=1 * 1000,  # in milliseconds
                     n_intervals=0
                 )
             ],
