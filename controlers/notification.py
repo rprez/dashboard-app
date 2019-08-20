@@ -1,7 +1,7 @@
 from models.notification import NotificationModel
 from datetime import datetime, timedelta
 from collections import Counter
-from sqlalchemy import desc
+from utils import split_filter_part
 
 from db import db
 
@@ -27,9 +27,19 @@ class NotificationController:
     def get_notification_by_type(self, type_alert: str) -> list:
         return db.session.query(NotificationModel).filter_by(alert=type_alert).all()
 
-    def get_all_notifications(self,page_current,page_size) -> list:
-        result =  db.session.query(NotificationModel).order_by(NotificationModel.fecha.desc()).paginate(page_current,page_size,False).items
-        return result
+    def get_all_notifications(self,page_current,page_size,filtering_expressions) -> list:
+        if filtering_expressions:
+            if "fecha" in filtering_expressions:
+                date_col = datetime.strptime(filtering_expressions.pop('fecha'), '%Y-%m-%d')
+                period_time = date_col + timedelta(days=0, hours=23, minutes=59)
+                return db.session.query(NotificationModel).filter(NotificationModel.fecha <= period_time, NotificationModel.fecha >= date_col).filter_by(
+                    **filtering_expressions).order_by(NotificationModel.fecha.desc()).paginate(page_current, page_size,False).items
+
+            return db.session.query(NotificationModel).filter_by(
+                **filtering_expressions).order_by(NotificationModel.fecha.desc()).paginate(page_current,page_size,False).items
+        else:
+            return db.session.query(NotificationModel).order_by(
+                NotificationModel.fecha.desc()).paginate(page_current, page_size, False).items
 
     def get_count_all_notifications(self) -> list:
         """Obtiene todas las mediciones enviadas. """
@@ -61,7 +71,7 @@ class NotificationController:
             :param minutes
         """
         active_meter_list = self.get_active_meter_list(days,hour,minutes)
-        return Counter([x.fecha.date() for x in active_meter_list if x.fecha])
+        return Counter([x.fecha.date().strftime("%d %b") for x in active_meter_list if x.fecha])
 
 
     def get_count_active_meter_list(self,days,hour,minutes) -> int:

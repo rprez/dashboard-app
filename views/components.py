@@ -11,6 +11,7 @@ def generate_notification_table():
                 id='notifications',
                 columns=[{"name": i, "id": i} for i in NotificationController.get_atributes_list()],
                 data=[],
+                filter_action="custom",
                 page_action="custom",
                 page_current=0,
                 page_size=20,

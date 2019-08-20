@@ -1,5 +1,7 @@
 from views.components import generate_notification_table, get_antel_logo, get_ute_logo, get_mini_container
 from views.components import generate_graph, generate_alert_table
+from utils import split_filter_part
+from datetime import datetime
 import dash_html_components as html
 import dash_core_components as dcc
 import dash
@@ -43,7 +45,7 @@ class DashBoard(object):
                                     style={"margin-bottom": "0px"},
                                 ),
                                 html.H5(
-                                    "Monitoreo medidores", style={"margin-top": "0px"}
+                                    "Modems", style={"margin-top": "0px"}
                                 ),
                             ]
                         )
@@ -115,32 +117,17 @@ class DashBoard(object):
             style={"display": "flex", "flex-direction": "column"},
         )
 
-        @self.app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals')])
-        def update_graph(n):
-            data = self.notification_controller.get_init_active_graph(30, 00, 00)
-            return {
-                      'data': [go.Scatter(
-                                x=list(data.keys()),
-                                y=list(data.values()),
-                                text="Notificaciones",
-                                mode='lines+markers',
-                                marker={
-                                    'size': 15,
-                                    'opacity': 0.5,
-                                    'line': {'width': 0.5, 'color': 'white'}
-                            }
-                         )
-                      ],
-                      'layout': {
-                          'clickmode': 'event+select',
-                          'title':'Medidores que enviaron notificación'
-                      }
-                    }
         # Tables update
         @self.app.callback(Output('notifications', 'data'),
-                         [Input('notifications','page_current'),Input('notifications','page_size')])
-        def update_table_notifications(page_current,page_size):
-            return [x.json() for x in self.notification_controller.get_all_notifications(page_current,page_size)]
+                         [Input('notifications','page_current'),Input('notifications','page_size'),Input('notifications','filter_query')])
+        def update_table_notifications(page_current,page_size,filter_query):
+            criteria = {}
+            if filter_query:
+                filtering_expressions = filter_query.split(' && ')
+                for filter_part in filtering_expressions:
+                    col_name, operator, filter_value = split_filter_part(filter_part)
+                    criteria.update({col_name: filter_value})
+            return [x.json() for x in self.notification_controller.get_all_notifications(page_current,page_size,criteria)]
 
         @self.app.callback(Output('alerts', 'data'),
                            [Input('alerts','page_current'),Input('alerts','page_size')])
@@ -163,6 +150,28 @@ class DashBoard(object):
             return active_count, total_count - active_count, total_count
 
         # Charts Update
+        @self.app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals')])
+        def update_graph(n):
+            data = self.notification_controller.get_init_active_graph(30, 00, 00)
+            return {
+                'data': [go.Scatter(
+                    x=list(data.keys()),
+                    y=list(data.values()),
+                    text="Notificaciones",
+                    mode='lines+markers',
+                    marker={
+                        'size': 15,
+                        'opacity': 0.5,
+                        'line': {'width': 0.5, 'color': 'white'}
+                    }
+                )
+                ],
+                'layout': {
+                    'clickmode': 'event+select',
+                    'title': 'Notificaciones de modems'
+                }
+            }
+
         @self.app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals')])
         def update_total_errors(n):
             alert_list = self.alert_controller.get_alert_list(0,1,0)
