@@ -1,7 +1,6 @@
 from views.components import generate_notification_table, get_antel_logo, get_ute_logo, get_mini_container
 from views.components import generate_graph, generate_alert_table
 from utils import split_filter_part
-from datetime import datetime
 import dash_html_components as html
 import dash_core_components as dcc
 import dash
@@ -23,7 +22,8 @@ class DashBoard(object):
         self.app = dash.Dash(
             __name__,
             server=server,
-            routes_pathname_prefix='/monitor/', external_stylesheets=external_stylesheets
+            routes_pathname_prefix='/monitor/',
+            external_stylesheets=external_stylesheets
         )
 
         self.app.layout = html.Div([

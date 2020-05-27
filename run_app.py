@@ -10,17 +10,11 @@ from flask_restful import Api
 from db import db
 
 server = flask.Flask(__name__)
-
-server.config['DEBUG'] = True
-
-server.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-server.secret_key = '3b4be1bd-c8a8-466d-bffd-9ac2a2de6c8c'
-
+server.config.from_object(os.environ['APP_SETTINGS'])
 
 @server.route('/')
 def index():
-    return 'Hi'
+    return 'Go to /monitor/'
 
 api = Api(server)
 api.add_resource(Notification, '/notification/<string:imei>')
