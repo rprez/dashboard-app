@@ -6,6 +6,10 @@ Dashboard web para monitoreo de los medidores inteligentes. Permite ver el estad
 
 El dashboard esta desarrollado sobre el framework Flask y las gráficas son realizadas con Dash
 
+## URL Dashboard
+
+http://<IP>/monitor/
+
 ## Requisitos
 
 ### runtime
@@ -24,7 +28,7 @@ Listadas en el requirements.txt
 * dash
 * dash-daq
 
-### Server 
+### Server
 
 Se levanta el server a través de Gunicorn y el modulo run_app.
 
@@ -39,7 +43,7 @@ Se levanta el server a través de Gunicorn y el modulo run_app.
     * config.StagingConfig
     * config.DevelopmentConfig
     * config.TestingConfig
-    
+
 * **PG_CONNECTION** - Conexión a PostGres ej: user:pass@host:port/bd
 * **ORA_CONNECTION** - Conexión a Oracle ej: user:pass@host:port/bd
 
