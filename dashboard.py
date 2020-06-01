@@ -22,7 +22,8 @@ class DashBoard(object):
         self.app = dash.Dash(
             __name__,
             server=server,
-            routes_pathname_prefix='/monitor/', external_stylesheets=external_stylesheets
+            routes_pathname_prefix='/monitor/',
+            external_stylesheets=external_stylesheets
         )
 
         self.app.layout = html.Div([
