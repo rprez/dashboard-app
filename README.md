@@ -40,8 +40,8 @@ Se levanta el server a través de Gunicorn y el modulo run_app.
     * config.DevelopmentConfig
     * config.TestingConfig
     
-* **PG_CONNECTION** - Conexión a PostGres ej: postgres:postgres@172.17.0.3:5432/utenotificaciones
-* **ORA_CONNECTION** - Conexión a Oracle ej: ute:ute@172.17.0.3:1521/ORCLCDB
+* **PG_CONNECTION** - Conexión a PostGres ej: user:pass@host:port/bd
+* **ORA_CONNECTION** - Conexión a Oracle ej: user:pass@host:port/bd
 
 ### Oracle
 Instalar el driver correspondiente a la versión desde:
