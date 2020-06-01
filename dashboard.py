@@ -1,7 +1,6 @@
-from views.components import generate_notification_table, get_antel_logo, get_ute_logo, get_mini_container
+from views.components import generate_notification_table, get_antel_logo, get_ute_logo, get_mini_container,generate_interval_input
 from views.components import generate_graph, generate_alert_table
 from utils import split_filter_part
-from datetime import datetime
 import dash_html_components as html
 import dash_core_components as dcc
 import dash
@@ -67,6 +66,7 @@ class DashBoard(object):
             html.Div([
                 html.Div(
                     [
+                        generate_interval_input(),
                         html.Div(
                             get_mini_container(),
                             id="info-container",
@@ -135,24 +135,29 @@ class DashBoard(object):
             return [x.json() for x in self.alert_controller.get_all_alerts(page_current, page_size)]
 
         # Data Notification Update
-        @self.app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals')])
-        def update_notification_data(n):
-            return self.notification_controller.get_count_notifications_by_perdiod(0, 1, 00)
+        @self.app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
+        def update_notification_data(n,value):
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            return self.notification_controller.get_count_notifications_by_perdiod(days, hour, minutes)
 
-        @self.app.callback(Output('alert_text', 'children'), [Input('interval-component', 'n_intervals')])
-        def update_alert_total(n):
-            return self.alert_controller.get_count_alert_by_perdiod(0, 1, 00)
+        @self.app.callback(Output('alert_text', 'children'),  [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
+        def update_alert_total(n,value):
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0,60)
+            return self.alert_controller.get_count_alert_by_perdiod(days, hour, minutes)
 
-        @self.app.callback([Output('actives_text', 'children'),Output('down_meter_text', 'children'),Output('total_imei_reports_text', 'children')], [Input('interval-component', 'n_intervals')])
-        def update_actives_total(n):
-            active_count = self.notification_controller.get_count_active_meter_list(0, 1, 00)
+        @self.app.callback([Output('actives_text', 'children'),Output('down_meter_text', 'children'),Output('total_imei_reports_text', 'children')],
+                           [Input('interval-component', 'n_intervals'), Input('time_filter', 'value')])
+        def update_actives_total(n,value):
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            active_count = self.notification_controller.get_count_active_meter_list(days, hour, minutes)
             total_count =  self.notification_controller.get_count_distinct_imei_notification()
             return active_count, total_count - active_count, total_count
 
         # Charts Update
-        @self.app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals')])
-        def update_graph(n):
-            data = self.notification_controller.get_init_active_graph(30, 00, 00)
+        @self.app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
+        def update_graph(n,value):
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            data = self.notification_controller.get_init_active_graph(days, hour, minutes)
             return {
                 'data': [go.Scatter(
                     x=list(data.keys()),
@@ -172,11 +177,12 @@ class DashBoard(object):
                 }
             }
 
-        @self.app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals')])
-        def update_total_errors(n):
-            alert_list = self.alert_controller.get_alert_list(0,1,0)
+        @self.app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
+        def update_total_errors(n,value):
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            alert_list = self.alert_controller.get_alert_list(days, hour, minutes)
             data = Counter([x[1] for x in alert_list])
-            total_notification = self.notification_controller.get_count_active_meter_list(0, 1, 0)
+            total_notification = self.notification_controller.get_count_active_meter_list(days, hour, minutes)
             data = [
                     dict(
                         type="pie",

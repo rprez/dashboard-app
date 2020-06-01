@@ -1,13 +1,13 @@
-import dash_table
+from dash_table import DataTable
 from controlers.notification import NotificationController
 from controlers.alert import AlertController
+from dash_core_components import RadioItems,Graph
 import dash_html_components as html
-import dash_core_components as dcc
 
 
 def generate_notification_table():
 
-    return dash_table.DataTable(
+    return DataTable(
                 id='notifications',
                 columns=[{"name": i, "id": i} for i in NotificationController.get_atributes_list()],
                 data=[],
@@ -22,9 +22,16 @@ def generate_notification_table():
                   },
     )
 
+def generate_interval_input():
+    return RadioItems(
+                id='time_filter',
+                options=[{'label': 'Hora', 'value': 'h'},{'label': 'Día', 'value': 'd'},{'label': 'Mes', 'value': 'm'}],
+                value='h',
+                labelStyle={'display': 'inline-block'}
+            )
 
 def generate_alert_table():
-    return dash_table.DataTable(
+    return DataTable(
                 id='alerts',
                 columns=[{"name": i, "id": i} for i in AlertController.get_atributes_list()],
                 data=[],
@@ -85,7 +92,7 @@ def get_mini_container():
             className="mini_container tooltip",
         ),
         html.Div(
-            [html.H6(id="total_imei_reports_text"), html.P("Total"),html.Span("Total de medidores reportados",className="tooltiptext")],
+            [html.H6(id="total_imei_reports_text"), html.P("Total reportados"),html.Span("Total de medidores reportados",className="tooltiptext")],
             id="total_imei_reports",
             className="mini_container tooltip",
         )
@@ -93,4 +100,4 @@ def get_mini_container():
 
 
 def generate_graph():
-    return [dcc.Graph(id="main_graph")]
+    return [Graph(id="main_graph")]
