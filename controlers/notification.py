@@ -62,7 +62,7 @@ class NotificationController:
         """
         now = datetime.now()
         period_time = now - timedelta(days=days,hours=hour,minutes=minutes)
-        return db.session.query(NotificationModel.imei.distinct(), NotificationModel.fecha).filter(NotificationModel.fecha <= now,NotificationModel.fecha >= period_time).order_by(NotificationModel.fecha.desc())
+        return db.session.query(NotificationModel.imei.distinct(), NotificationModel.fecha).filter(NotificationModel.fecha <= now,NotificationModel.fecha >= period_time).order_by(NotificationModel.fecha.asc())
 
     def get_init_active_graph(self, days, hour, minutes,format):
         """Eje de las x para grafica de activos dentro de un perdio de tiempo.
