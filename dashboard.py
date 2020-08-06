@@ -138,18 +138,18 @@ class DashBoard(object):
         # Data Notification Update
         @self.app.callback(Output('total_notifications_text', 'children'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
         def update_notification_data(n,value):
-            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (7, 0, 0) if value == 'd' else (1, 0, 0)
             return self.notification_controller.get_count_notifications_by_perdiod(days, hour, minutes)
 
         @self.app.callback(Output('alert_text', 'children'),  [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
         def update_alert_total(n,value):
-            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0,60)
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (7, 0, 0) if value == 'd' else (1, 0, 0)
             return self.alert_controller.get_count_alert_by_perdiod(days, hour, minutes)
 
         @self.app.callback([Output('actives_text', 'children'),Output('down_meter_text', 'children'),Output('total_imei_reports_text', 'children')],
                            [Input('interval-component', 'n_intervals'), Input('time_filter', 'value')])
         def update_actives_total(n,value):
-            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (7, 0, 0) if value == 'd' else (1, 0, 0)
             active_count = self.notification_controller.get_count_active_meter_list(days, hour, minutes)
             total_count =  self.notification_controller.get_count_distinct_imei_notification()
             return active_count, total_count - active_count, total_count
@@ -157,8 +157,8 @@ class DashBoard(object):
         # Charts Update
         @self.app.callback(Output('main_graph', 'figure'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
         def update_graph(n,value):
-            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
-            data = self.notification_controller.get_init_active_graph(days, hour, minutes)
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (7, 0, 0) if value == 'd' else (1, 0, 0)
+            data = self.notification_controller.get_init_active_graph(days, hour, minutes,value)
             return {
                 'data': [go.Scatter(
                     x=list(data.keys()),
@@ -180,7 +180,7 @@ class DashBoard(object):
 
         @self.app.callback(Output('charts_errors', 'figure'), [Input('interval-component', 'n_intervals'),Input('time_filter', 'value')])
         def update_total_errors(n,value):
-            days, hour, minutes = (30, 0, 0) if value == 'm' else (0, 1, 0) if value == 'd' else (0, 0, 60)
+            days, hour, minutes = (30, 0, 0) if value == 'm' else (7, 0, 0) if value == 'd' else (1, 0, 0)
             alert_list = self.alert_controller.get_alert_list(days, hour, minutes)
             data = Counter([x[1] for x in alert_list])
             total_notification = self.notification_controller.get_count_active_meter_list(days, hour, minutes)

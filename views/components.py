@@ -25,7 +25,7 @@ def generate_notification_table():
 def generate_interval_input():
     return RadioItems(
                 id='time_filter',
-                options=[{'label': 'Hora', 'value': 'h'},{'label': 'Día', 'value': 'd'},{'label': 'Mes', 'value': 'm'}],
+                options=[{'label': '24hs', 'value': 'h'},{'label': 'Semana', 'value': 'd'},{'label': 'Mes', 'value': 'm'}],
                 value='h',
                 labelStyle={'display': 'inline-block'}
             )
