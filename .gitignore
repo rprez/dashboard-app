@@ -15,5 +15,4 @@ pip-selfcheck.json
 
 .idea/
 
-venv/
 logs/
